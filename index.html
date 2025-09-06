@@ -1,52 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Class Chat</title>
-  <style>
-    body {
-      font-family: 'Courier New', monospace;
-      background-color: #121212;
-      color: #00ff00;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-    }
-    #chatBox {
-      flex-grow: 1;
-      padding: 10px;
-      overflow-y: auto;
-      border-bottom: 1px solid #333;
-    }
-    #userInput {
-      display: flex;
-      padding: 10px;
-      background-color: #1c1c1c;
-      border-top: 1px solid #333;
-    }
-    #userInput input {
-      flex-grow: 1;
-      padding: 5px;
-      background-color: #333;
-      border: none;
-      color: #00ff00;
-    }
-    #userInput button {
-      padding: 5px 10px;
-      background-color: #333;
-      border: none;
-      color: #00ff00;
-      cursor: pointer;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Class Chat</title>
+<style>
+  body {
+    font-family: 'Courier New', monospace;
+    background-color: #121212;
+    color: #00ff00;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  #chatBox {
+    flex-grow: 1;
+    padding: 10px;
+    overflow-y: auto;
+    border-bottom: 1px solid #333;
+  }
+  #userInput {
+    display: flex;
+    padding: 10px;
+    background-color: #1c1c1c;
+    border-top: 1px solid #333;
+  }
+  #userInput input {
+    flex-grow: 1;
+    padding: 5px;
+    background-color: #333;
+    border: none;
+    color: #00ff00;
+  }
+  #userInput button {
+    padding: 5px 10px;
+    background-color: #333;
+    border: none;
+    color: #00ff00;
+    cursor: pointer;
+  }
+  #usernameContainer {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    display: flex;
+    gap: 5px;
+  }
+  #usernameContainer input {
+    padding: 5px;
+    background-color: #333;
+    border: none;
+    color: #00ff00;
+  }
+  #usernameContainer button {
+    padding: 5px 10px;
+    background-color: #333;
+    border: none;
+    color: #00ff00;
+    cursor: pointer;
+  }
+</style>
 </head>
 <body>
 
 <div id="chatBox">
-  <p>Welcome to the Class Chat. Type your name below to join.</p>
+  <p>Welcome to Class Chat. Enter a message below to start chatting.</p>
 </div>
 
 <div id="userInput">
@@ -54,25 +74,41 @@
   <button id="sendButton" disabled>Send</button>
 </div>
 
-<script>
-  let username = prompt("Enter a temporary username:");
+<div id="usernameContainer">
+  <input type="text" id="usernameInput" placeholder="Optional username">
+  <button onclick="setUsername()">Apply</button>
+</div>
 
-  if (!username) {
-    username = "Anonymous";
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script>
+  const SUPABASE_URL = 'https://uxbanhakzwxummtdyivs.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV4YmFuaGFrend4dW1tdGR5aXZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcxNTExMDQsImV4cCI6MjA3MjcyNzEwNH0.Y3E8bYkYiUAbJZjLsORBZDktI1wGoi8q5XOwb-BUwn4';
+  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  let username = "Anonymous";
+
+  function setUsername() {
+    const input = document.getElementById('usernameInput').value.trim();
+    if (input) {
+      username = input;
+      alert('Username set to: ' + username);
+      document.getElementById('usernameInput').value = '';
+    } else {
+      username = "Anonymous";
+      alert('Username reset to Anonymous');
+    }
   }
 
   document.getElementById('messageInput').disabled = false;
   document.getElementById('sendButton').disabled = false;
 
-  document.getElementById('sendButton').addEventListener('click', () => {
-    const message = document.getElementById('messageInput').value;
-    if (message.trim()) {
-      const chatBox = document.getElementById('chatBox');
-      const messageElement = document.createElement('p');
-      messageElement.textContent = `${username}: ${message}`;
-      chatBox.appendChild(messageElement);
+  document.getElementById('sendButton').addEventListener('click', async () => {
+    const message = document.getElementById('messageInput').value.trim();
+    if (message) {
+      await supabase
+        .from('messages')
+        .insert([{ username, content: message }]);
       document.getElementById('messageInput').value = '';
-      chatBox.scrollTop = chatBox.scrollHeight;
     }
   });
 
@@ -81,6 +117,17 @@
       document.getElementById('sendButton').click();
     }
   });
+
+  supabase
+    .from('messages')
+    .on('INSERT', payload => {
+      const chatBox = document.getElementById('chatBox');
+      const messageElement = document.createElement('p');
+      messageElement.textContent = `${payload.new.username}: ${payload.new.content}`;
+      chatBox.appendChild(messageElement);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    })
+    .subscribe();
 </script>
 
 </body>
