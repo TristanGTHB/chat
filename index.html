@@ -2,44 +2,86 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Class Chat</title>
   <style>
-    body { font-family: sans-serif; text-align: center; padding: 50px; background: #f4f4f4; }
-    h1 { margin-bottom: 20px; }
-    p { font-size: 14px; color: #555; }
-    input { padding: 5px; margin: 10px; width: 200px; }
-    button { padding: 5px 10px; }
+    body {
+      font-family: 'Courier New', monospace;
+      background-color: #121212;
+      color: #00ff00;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    #chatBox {
+      flex-grow: 1;
+      padding: 10px;
+      overflow-y: auto;
+      border-bottom: 1px solid #333;
+    }
+    #userInput {
+      display: flex;
+      padding: 10px;
+      background-color: #1c1c1c;
+      border-top: 1px solid #333;
+    }
+    #userInput input {
+      flex-grow: 1;
+      padding: 5px;
+      background-color: #333;
+      border: none;
+      color: #00ff00;
+    }
+    #userInput button {
+      padding: 5px 10px;
+      background-color: #333;
+      border: none;
+      color: #00ff00;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
 
-<h1>Welcome to Class Chat</h1>
-<p>Enter a temporary name to join the chat:</p>
-<input type="text" id="tempName" placeholder="Your name">
-<button onclick="setName()">Join Chat</button>
+<div id="chatBox">
+  <p>Welcome to the Class Chat. Type your name below to join.</p>
+</div>
+
+<div id="userInput">
+  <input type="text" id="messageInput" placeholder="Enter your message..." disabled>
+  <button id="sendButton" disabled>Send</button>
+</div>
 
 <script>
-  function setName() {
-    const name = document.getElementById('tempName').value || 'Anon';
-    alert('Hi ' + name + '! Use the chat widget in the bottom-right to talk with your friends.');
-    document.getElementById('tempName').style.display = 'none';
-    document.querySelector('button').style.display = 'none';
-  }
-</script>
+  let username = prompt("Enter a temporary username:");
 
-<!--Start of Tawk.to Script-->
-<script type="text/javascript">
-var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-(function(){
-var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-s1.async=true;
-s1.src='https://embed.tawk.to/68bc02e88e5e8d7ad6a06955/1j4f6mnl1';
-s1.charset='UTF-8';
-s1.setAttribute('crossorigin','*');
-s0.parentNode.insertBefore(s1,s0);
-})();
+  if (!username) {
+    username = "Anonymous";
+  }
+
+  document.getElementById('messageInput').disabled = false;
+  document.getElementById('sendButton').disabled = false;
+
+  document.getElementById('sendButton').addEventListener('click', () => {
+    const message = document.getElementById('messageInput').value;
+    if (message.trim()) {
+      const chatBox = document.getElementById('chatBox');
+      const messageElement = document.createElement('p');
+      messageElement.textContent = `${username}: ${message}`;
+      chatBox.appendChild(messageElement);
+      document.getElementById('messageInput').value = '';
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+  });
+
+  document.getElementById('messageInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      document.getElementById('sendButton').click();
+    }
+  });
 </script>
-<!--End of Tawk.to Script-->
 
 </body>
 </html>
