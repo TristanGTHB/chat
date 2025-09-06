@@ -82,9 +82,10 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script>
 window.onload = function() {
+  // Supabase client
   const SUPABASE_URL = 'https://uxbanhakzwxummtdyivs.supabase.co';
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV4YmFuaGFrend4dW1tdGR5aXZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcxNTExMDQsImV4cCI6MjA3MjcyNzEwNH0.Y3E8bYkYiUAbJZjLsORBZDktI1wGoi8q5XOwb-BUwn4';
-  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
   let username = "Anonymous";
 
@@ -103,7 +104,7 @@ window.onload = function() {
   document.getElementById('sendButton').addEventListener('click', async () => {
     const message = document.getElementById('messageInput').value.trim();
     if (message) {
-      await supabase.from('messages').insert([{ username, content: message }]);
+      await supabaseClient.from('messages').insert([{ username, content: message }]);
       document.getElementById('messageInput').value = '';
       document.getElementById('messageInput').focus();
     }
@@ -113,7 +114,7 @@ window.onload = function() {
     if (e.key === 'Enter') document.getElementById('sendButton').click();
   });
 
-  supabase.from('messages').on('INSERT', payload => {
+  supabaseClient.from('messages').on('INSERT', payload => {
     const chatBox = document.getElementById('chatBox');
     const messageElement = document.createElement('p');
     messageElement.textContent = `${payload.new.username}: ${payload.new.content}`;
@@ -121,7 +122,7 @@ window.onload = function() {
     chatBox.scrollTop = chatBox.scrollHeight;
   }).subscribe();
 
-  // expose function globally for the Apply button
+  // Expose setUsername globally for the Apply button
   window.setUsername = setUsername;
 };
 </script>
