@@ -43,7 +43,7 @@
   }
   #usernameContainer {
     position: fixed;
-    bottom: 70px; /* move above the input bar */
+    bottom: 70px;
     right: 10px;
     display: flex;
     gap: 5px;
@@ -79,15 +79,14 @@
   <button onclick="setUsername()">Apply</button>
 </div>
 
-<!-- load supabase first -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script>
-  // initialize variables first
-  let username = "Anonymous";
-
+window.onload = function() {
   const SUPABASE_URL = 'https://uxbanhakzwxummtdyivs.supabase.co';
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV4YmFuaGFrend4dW1tdGR5aXZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcxNTExMDQsImV4cCI6MjA3MjcyNzEwNH0.Y3E8bYkYiUAbJZjLsORBZDktI1wGoi8q5XOwb-BUwn4';
   const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  let username = "Anonymous";
 
   function setUsername() {
     const input = document.getElementById('usernameInput').value.trim();
@@ -106,6 +105,7 @@
     if (message) {
       await supabase.from('messages').insert([{ username, content: message }]);
       document.getElementById('messageInput').value = '';
+      document.getElementById('messageInput').focus();
     }
   });
 
@@ -120,6 +120,10 @@
     chatBox.appendChild(messageElement);
     chatBox.scrollTop = chatBox.scrollHeight;
   }).subscribe();
+
+  // expose function globally for the Apply button
+  window.setUsername = setUsername;
+};
 </script>
 
 </body>
