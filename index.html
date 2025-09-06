@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Class Chat</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 50px; background: #f4f4f4; }
+    h1 { margin-bottom: 20px; }
+    p { font-size: 14px; color: #555; }
+    input { padding: 5px; margin: 10px; width: 200px; }
+    button { padding: 5px 10px; }
+  </style>
+</head>
+<body>
+
+<h1>Welcome to Class Chat</h1>
+<p>Enter a temporary name to join the chat:</p>
+<input type="text" id="tempName" placeholder="Your name">
+<button onclick="setName()">Join Chat</button>
+
+<script>
+  function setName() {
+    const name = document.getElementById('tempName').value || 'Anon';
+    alert('Hi ' + name + '! Use the chat widget in the bottom-right to talk with your friends.');
+    document.getElementById('tempName').style.display = 'none';
+    document.querySelector('button').style.display = 'none';
+  }
+</script>
+
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/68bc02e88e5e8d7ad6a06955/1j4f6mnl1';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+<!--End of Tawk.to Script-->
+
+</body>
+</html>
