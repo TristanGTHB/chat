@@ -70,8 +70,8 @@
 </div>
 
 <div id="userInput">
-  <input type="text" id="messageInput" placeholder="Enter your message..." disabled>
-  <button id="sendButton" disabled>Send</button>
+  <input type="text" id="messageInput" placeholder="Enter your message...">
+  <button id="sendButton">Send</button>
 </div>
 
 <div id="usernameContainer">
@@ -98,9 +98,6 @@
       alert('Username reset to Anonymous');
     }
   }
-
-  document.getElementById('messageInput').disabled = false;
-  document.getElementById('sendButton').disabled = false;
 
   document.getElementById('sendButton').addEventListener('click', async () => {
     const message = document.getElementById('messageInput').value.trim();
